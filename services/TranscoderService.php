@@ -118,9 +118,7 @@ class TranscoderService extends BaseApplicationComponent
 
 /* -- If the video file already exists and hasn't been modified, return it.  Otherwise, start it transcoding */
 
-            if (file_exists($destVideoPath) && (filemtime($destVideoPath) >= filemtime($filepath)))
-                $result = craft()->config->get("transcoderUrl", "transcoder") . $destVideoFile;
-            else
+            if (!file_exists($destVideoPath) || (filemtime($destVideoPath) >= filemtime($filepath)))
             {
 
 /* -- Kick off the transcoding */
@@ -132,6 +130,9 @@ class TranscoderService extends BaseApplicationComponent
 
                 file_put_contents($lockfile, $pid);
             }
+
+			$result = craft()->config->get("transcoderUrl", "transcoder") . $destVideoFile;
+
         }
         return $result;
     } /* -- getVideoUrl */
